@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar de pontos Livelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: a shopper's checklist — one summary strip, then two filterable tables; single column, max ~1100px */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --line:#dde1e8; --fg:#1b2230; --muted:#5d6676;
+  --accent:#0d6e6e; --accent-soft:#e1f1f0; --hot:#b4410f;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --panel:#1a2029; --line:#2d3542; --fg:#e7ebf1; --muted:#9aa4b3;
+  --accent:#4fc2bd; --accent-soft:#163533; --hot:#f08a5d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --panel:#1a2029; --line:#2d3542; --fg:#e7ebf1; --muted:#9aa4b3;
+  --accent:#4fc2bd; --accent-soft:#163533; --hot:#f08a5d; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+.upd{color:var(--accent)}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.25rem;font-weight:700}
+.lede{margin:6px 0 0;color:var(--muted);max-width:65ch}
+.lede b{color:var(--fg)}
+.meta{font-size:.85rem;color:var(--muted);margin-top:8px}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:12px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .k{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--display);font-size:1.7rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat .s{font-size:.85rem;color:var(--muted)}
+section.block{display:flex;flex-direction:column;gap:10px}
+.note{margin:0;color:var(--muted);font-size:.9rem;max-width:70ch}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.count{font-size:.85rem;color:var(--muted)}
+.clear{font:inherit;font-size:.85rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+.clear:hover{border-color:var(--accent)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:34rem}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.95rem}
+thead{position:sticky;top:0;z-index:1;background:var(--panel)}
+th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;font-weight:400;vertical-align:bottom}
+td{padding:8px 10px;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+td a{color:inherit;text-decoration-color:var(--line);text-underline-offset:3px}
+td a:hover{text-decoration-color:var(--accent)}
+.hc{display:flex;align-items:center;gap:4px}
+.hc input,.hc select{flex:1;min-width:0;width:100%;font:inherit;font-size:.85rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.hc input::placeholder{color:var(--muted);opacity:1}
+.hc select option{background:var(--panel);color:var(--fg)}
+.hc .on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.hc .lbl{flex:1;font-size:.85rem;color:var(--muted);padding:4px 0}
+.sort{font:inherit;background:none;border:0;color:var(--muted);cursor:pointer;padding:2px 4px;border-radius:4px;line-height:1}
+.sort::after{content:"\2195"}
+th[aria-sort=ascending] .sort::after{content:"\2191";color:var(--accent)}
+th[aria-sort=descending] .sort::after{content:"\2193";color:var(--accent)}
+.sort:focus-visible,.clear:focus-visible,.hc input:focus-visible,.hc select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.pill{display:inline-block;font-size:.8rem;padding:1px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:700;white-space:nowrap}
+.mult{color:var(--hot);font-weight:700}
+.muted{color:var(--muted)}
+.empty{padding:18px;color:var(--muted);text-align:center}
+.foot{font-size:.8rem;color:var(--muted);max-width:75ch}
+@media (max-width:600px){.hide-n{display:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Radar de pontos Livelo</h1>
+    <p class="lede" id="lede">Carregando as pontuações dos parceiros…</p>
+    <p class="meta" id="meta"></p>
+  </header>
+
+  <div class="strip" id="strip">
+    <div class="stat"><div class="k">Em promoção</div><div class="v" id="s-promo">—</div><div class="s">parceiros acima do normal</div></div>
+    <div class="stat"><div class="k">Maior pontuação</div><div class="v" id="s-max">—</div><div class="s" id="s-max-who">por real gasto</div></div>
+    <div class="stat"><div class="k">Maior ganho</div><div class="v" id="s-mult">—</div><div class="s" id="s-mult-who">sobre a taxa normal</div></div>
+    <div class="stat"><div class="k">Parceiros</div><div class="v" id="s-total">—</div><div class="s">sites que dão pontos</div></div>
+  </div>
+
+  <section class="block" id="promocoes">
+    <h2>Em promoção agora</h2>
+    <p class="note">Antes de comprar, abra a página do parceiro na Livelo e ative a pontuação. "Clube" é a taxa para quem assina o Clube Livelo.</p>
+    <div class="bar"><span class="count" id="c-promos"></span><button type="button" class="clear" data-t="promos" id="clear-promos">Limpar filtros</button></div>
+    <div class="box">
+      <table data-t="promos">
+        <thead><tr>
+          <th data-k="parceiro"><div class="hc"><input id="fp-parceiro" type="search" data-f="parceiro" data-op="text" placeholder="Parceiro" aria-label="Filtrar por parceiro"><button type="button" class="sort" aria-label="Ordenar por parceiro"></button></div></th>
+          <th data-k="categoria" class="hide-n"><div class="hc"><select id="fp-categoria" data-f="categoria" data-op="eq" aria-label="Filtrar por categoria"><option value="">Categoria</option></select><button type="button" class="sort" aria-label="Ordenar por categoria"></button></div></th>
+          <th data-k="taxa_atual"><div class="hc"><select id="fp-hoje" data-f="taxa_atual" data-op="min" aria-label="Filtrar pela pontuação de hoje"><option value="">Hoje</option><option value="2">Hoje: 2+</option><option value="5">Hoje: 5+</option><option value="10">Hoje: 10+</option></select><button type="button" class="sort" aria-label="Ordenar pela pontuação de hoje"></button></div></th>
+          <th data-k="taxa_normal" class="hide-n"><div class="hc"><span class="lbl">Normal</span><button type="button" class="sort" aria-label="Ordenar pela pontuação normal"></button></div></th>
+          <th data-k="taxa_clube" class="hide-n"><div class="hc"><select id="fp-clube" data-f="taxa_clube" data-op="has" aria-label="Filtrar pela taxa do Clube"><option value="">Clube</option><option value="1">Com Clube</option><option value="0">Sem Clube</option></select><button type="button" class="sort" aria-label="Ordenar pela taxa do Clube"></button></div></th>
+          <th data-k="multiplicador"><div class="hc"><select id="fp-ganho" data-f="multiplicador" data-op="min" aria-label="Filtrar pelo ganho"><option value="">Ganho</option><option value="1.5">1,5x+</option><option value="2">2x+</option><option value="3">3x+</option></select><button type="button" class="sort" aria-label="Ordenar pelo ganho"></button></div></th>
+        </tr></thead>
+        <tbody id="tb-promos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="todos">
+    <h2>Todos os parceiros</h2>
+    <div class="bar"><span class="count" id="c-lista"></span><button type="button" class="clear" data-t="lista" id="clear-lista">Limpar filtros</button></div>
+    <div class="box">
+      <table data-t="lista">
+        <thead><tr>
+          <th data-k="parceiro"><div class="hc"><input id="fl-parceiro" type="search" data-f="parceiro" data-op="text" placeholder="Parceiro" aria-label="Filtrar por parceiro"><button type="button" class="sort" aria-label="Ordenar por parceiro"></button></div></th>
+          <th data-k="categoria" class="hide-n"><div class="hc"><select id="fl-categoria" data-f="categoria" data-op="eq" aria-label="Filtrar por categoria"><option value="">Categoria</option></select><button type="button" class="sort" aria-label="Ordenar por categoria"></button></div></th>
+          <th data-k="taxa_atual"><div class="hc"><select id="fl-hoje" data-f="taxa_atual" data-op="min" aria-label="Filtrar pela pontuação de hoje"><option value="">Hoje</option><option value="2">Hoje: 2+</option><option value="5">Hoje: 5+</option><option value="10">Hoje: 10+</option></select><button type="button" class="sort" aria-label="Ordenar pela pontuação de hoje"></button></div></th>
+          <th data-k="taxa_clube" class="hide-n"><div class="hc"><select id="fl-clube" data-f="taxa_clube" data-op="has" aria-label="Filtrar pela taxa do Clube"><option value="">Clube</option><option value="1">Com Clube</option><option value="0">Sem Clube</option></select><button type="button" class="sort" aria-label="Ordenar pela taxa do Clube"></button></div></th>
+          <th data-k="promocao"><div class="hc"><select id="fl-sit" data-f="promocao" data-op="bool" aria-label="Filtrar por situação"><option value="">Situação</option><option value="1">Em promoção</option><option value="0">Normal</option></select><button type="button" class="sort" aria-label="Ordenar por situação"></button></div></th>
+        </tr></thead>
+        <tbody id="tb-lista"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="foot" id="upd-line" hidden>Administra esta página? <a class="upd" id="upd" href="#" target="_blank" rel="noopener">Atualizar agora no GitHub</a> (abra a rotina e clique em "Run workflow"; a página muda em cerca de 2 minutos).</p>
+  <p class="foot">Página feita para acompanhar promoções, sem ligação oficial com a Livelo. As pontuações vêm da página pública de parceiros da Livelo e podem mudar a qualquer momento; confira sempre na página do parceiro antes de comprar.</p>
+</div>
+
+<script>
+(function(){
+  let all = [];
+  const view = {
+    promos: {f:{}, key:'multiplicador', dir:'desc'},
+    lista: {f:{}, key:'parceiro', dir:'asc'},
+  };
+  const num = new Set(['taxa_atual','taxa_normal','taxa_clube','multiplicador']);
+  const fmtN = (v) => Number.isInteger(v) ? String(v) : String(Math.round(v*10)/10).replace('.', ',');
+  const rate = (v, u, ate) => {
+    if (v == null) return '';
+    if (v < 1) return '1 pt a cada ' + u + ' ' + Math.round(1/v);
+    return (ate ? 'até ' : '') + fmtN(v) + (v === 1 ? ' pt/' : ' pts/') + u;
+  };
+  const isPromo = (r) => r.promocao === true || r.promocao === 'true';
+
+  function rows(t){
+    const v = view[t];
+    const base = t === 'promos' ? all.filter(isPromo) : all;
+    const tests = Object.entries(v.f).filter(([,c]) => c.val !== '');
+    return base.filter((r) => tests.every(([f,c]) => {
+      const x = r[f];
+      if (c.op === 'text') return String(x||'').toLowerCase().includes(c.val.trim().toLowerCase());
+      if (c.op === 'eq') return x === c.val;
+      if (c.op === 'min') return x != null && Number(x) >= Number(c.val);
+      if (c.op === 'has') return c.val === '1' ? x != null : x == null;
+      if (c.op === 'bool') return isPromo(r) === (c.val === '1');
+      return true;
+    })).sort((a,b) => {
+      let x = a[v.key], y = b[v.key];
+      if (v.key === 'promocao'){ x = isPromo(a) ? 0 : 1; y = isPromo(b) ? 0 : 1; }
+      const nx = x == null, ny = y == null;
+      if (nx && ny) return a.parceiro.localeCompare(b.parceiro,'pt');
+      if (nx) return 1; if (ny) return -1;
+      let c = typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y),'pt');
+      if (v.dir === 'desc') c = -c;
+      return c || a.parceiro.localeCompare(b.parceiro,'pt');
+    });
+  }
+  function link(r){
+    const a = document.createElement('a');
+    a.href = r.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.parceiro;
+    return a;
+  }
+  function td(content, cls){
+    const c = document.createElement('td');
+    if (content instanceof Node) c.append(content); else c.textContent = content;
+    if (cls) c.className = cls;
+    return c;
+  }
+  function draw(t){
+    const list = rows(t);
+    const tb = document.getElementById('tb-' + t);
+    const cols = t === 'promos' ? 6 : 5;
+    if (!list.length){
+      const tr = document.createElement('tr'); const c = td('Nenhum parceiro com esses filtros.', 'empty'); c.colSpan = cols; tr.append(c);
+      tb.replaceChildren(tr);
+    } else {
+      tb.replaceChildren(...list.map((r) => {
+        const tr = document.createElement('tr');
+        if (t === 'promos'){
+          tr.append(td(link(r)), td(r.categoria,'hide-n'), td(rate(r.taxa_atual,r.unidade,r.ate)), td(rate(r.taxa_normal,r.unidade,false),'hide-n muted'), td(rate(r.taxa_clube,r.unidade,r.ate),'hide-n'), td(fmtN(r.multiplicador)+'x','mult'));
+        } else {
+          const st = document.createElement('span');
+          if (isPromo(r)){ st.className = 'pill'; st.textContent = 'Em promoção'; } else { st.className = 'muted'; st.textContent = 'Normal'; }
+          tr.append(td(link(r)), td(r.categoria,'hide-n'), td(rate(r.taxa_atual,r.unidade,r.ate)), td(rate(r.taxa_clube,r.unidade,r.ate),'hide-n'), td(st));
+        }
+        return tr;
+      }));
+    }
+    const total = t === 'promos' ? all.filter(isPromo).length : all.length;
+    const label = t === 'promos' ? 'parceiros em promoção' : 'parceiros';
+    document.getElementById('c-' + t).textContent = (list.length === total ? '' : list.length + ' de ') + total + ' ' + label;
+    document.querySelectorAll('table[data-t="'+t+'"] th[data-k]').forEach((th) => {
+      th.setAttribute('aria-sort', th.dataset.k === view[t].key ? (view[t].dir === 'asc' ? 'ascending' : 'descending') : 'none');
+    });
+  }
+  function summary(d){
+    const promos = all.filter(isPromo);
+    const brl = all.filter((r) => r.unidade === 'R$');
+    const top = [...brl].sort((a,b) => (b.taxa_clube||b.taxa_atual) - (a.taxa_clube||a.taxa_atual))[0];
+    const mult = [...promos].sort((a,b) => b.multiplicador - a.multiplicador)[0];
+    document.getElementById('s-promo').textContent = promos.length;
+    document.getElementById('s-total').textContent = all.length;
+    if (top){ const v = top.taxa_clube || top.taxa_atual; document.getElementById('s-max').textContent = fmtN(v) + ' pts'; document.getElementById('s-max-who').textContent = top.parceiro + (top.taxa_clube ? ' (Clube)' : '') + ', por real'; }
+    if (mult){ document.getElementById('s-mult').textContent = fmtN(mult.multiplicador) + 'x'; document.getElementById('s-mult-who').textContent = mult.parceiro + ', sobre a taxa normal'; }
+    const lede = document.getElementById('lede');
+    lede.replaceChildren();
+    const b1 = document.createElement('b'); b1.textContent = promos.length;
+    const b2 = document.createElement('b'); b2.textContent = all.length;
+    lede.append(b1, ' dos ', b2, ' parceiros da Livelo estão dando mais pontos do que o normal. Use os filtros de cada coluna para achar a melhor loja para a sua compra.');
+    if (d.atualizado){
+      const t = new Date(d.atualizado);
+      if (!isNaN(t)) document.getElementById('meta').textContent = 'Pontuações atualizadas em ' + t.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'}).replace(',', ' às');
+    }
+    const cats = [...new Set(all.map((r) => r.categoria))].sort((a,b) => a.localeCompare(b,'pt'));
+    document.querySelectorAll('select[data-f="categoria"]').forEach((s) => {
+      cats.forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; s.append(o); });
+    });
+  }
+
+  document.querySelectorAll('table[data-t]').forEach((tbl) => {
+    const t = tbl.dataset.t;
+    tbl.querySelectorAll('[data-f]').forEach((c) => {
+      c.addEventListener(c.tagName === 'INPUT' ? 'input' : 'change', () => {
+        view[t].f[c.dataset.f] = {op:c.dataset.op, val:c.value};
+        c.classList.toggle('on', c.value !== '');
+        draw(t);
+      });
+    });
+    tbl.querySelectorAll('th[data-k] .sort').forEach((b) => b.addEventListener('click', () => {
+      const k = b.closest('th').dataset.k, v = view[t];
+      if (v.key === k) v.dir = v.dir === 'asc' ? 'desc' : 'asc';
+      else { v.key = k; v.dir = num.has(k) ? 'desc' : 'asc'; }
+      draw(t);
+    }));
+  });
+  document.querySelectorAll('.clear').forEach((b) => b.addEventListener('click', () => {
+    const t = b.dataset.t; view[t].f = {};
+    document.querySelectorAll('table[data-t="'+t+'"] [data-f]').forEach((c) => { c.value = ''; c.classList.remove('on'); });
+    draw(t);
+  }));
+
+  fetch('dados.json', {cache:'no-store'}).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {
+    all = Array.isArray(d) ? d : (d.parceiros || []);
+    summary(d); draw('promos'); draw('lista');
+    if (d.repo){ document.getElementById('upd').href = 'https://github.com/' + d.repo + '/actions/workflows/atualizar.yml'; document.getElementById('upd-line').hidden = false; }
+  }).catch(() => {
+    document.getElementById('lede').textContent = 'Não foi possível carregar as pontuações agora. Recarregue a página em alguns instantes.';
+  });
+})();
+</script>
+
+</body>
+</html>
