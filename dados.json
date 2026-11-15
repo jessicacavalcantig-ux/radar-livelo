@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-11-14T16:43:59Z",
+ "atualizado": "2026-11-15T17:24:10Z",
  "repo": "jessicacavalcantig-ux/radar-livelo",
  "parceiros": [
   {
@@ -1828,13 +1828,13 @@
   },
   {
    "parceiro": "Mizuno",
-   "taxa_atual": 1.0,
-   "taxa_normal": 1.0,
-   "taxa_clube": null,
+   "taxa_atual": 8.0,
+   "taxa_normal": 1,
+   "taxa_clube": 15.0,
    "unidade": "R$",
    "ate": false,
-   "promocao": false,
-   "multiplicador": 1.0,
+   "promocao": true,
+   "multiplicador": 8.0,
    "link": "https://livelo.com.br/juntar-pontos/parceiros/mizuno/VMZ",
    "categoria": "Moda e esporte"
   },
