@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-11-20T18:50:05Z",
+ "atualizado": "2026-11-21T17:46:26Z",
  "repo": "jessicacavalcantig-ux/radar-livelo",
  "parceiros": [
   {
@@ -688,13 +688,13 @@
   },
   {
    "parceiro": "Coffee Mais",
-   "taxa_atual": 4.0,
-   "taxa_normal": 3,
-   "taxa_clube": 10.0,
+   "taxa_atual": 3.0,
+   "taxa_normal": 3.0,
+   "taxa_clube": 4.0,
    "unidade": "R$",
-   "ate": true,
-   "promocao": true,
-   "multiplicador": 1.33,
+   "ate": false,
+   "promocao": false,
+   "multiplicador": 1.0,
    "link": "https://livelo.com.br/juntar-pontos/parceiros/coffee-mais/CFF",
    "categoria": "Comida e presentes"
   },
@@ -1864,13 +1864,13 @@
   },
   {
    "parceiro": "Mondaine",
-   "taxa_atual": 8.0,
-   "taxa_normal": 2,
-   "taxa_clube": 10.0,
+   "taxa_atual": 2.0,
+   "taxa_normal": 2.0,
+   "taxa_clube": null,
    "unidade": "R$",
-   "ate": true,
-   "promocao": true,
-   "multiplicador": 4.0,
+   "ate": false,
+   "promocao": false,
+   "multiplicador": 1.0,
    "link": "https://livelo.com.br/juntar-pontos/parceiros/mondaine/MDN",
    "categoria": "Acessórios e malas"
   },
