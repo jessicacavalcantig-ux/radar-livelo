@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-11-21T17:46:26Z",
+ "atualizado": "2026-11-22T18:02:35Z",
  "repo": "jessicacavalcantig-ux/radar-livelo",
  "parceiros": [
   {
@@ -1600,13 +1600,13 @@
   },
   {
    "parceiro": "LIVE!",
-   "taxa_atual": 8.0,
-   "taxa_normal": 1,
+   "taxa_atual": 1.0,
+   "taxa_normal": 1.0,
    "taxa_clube": null,
    "unidade": "R$",
    "ate": false,
-   "promocao": true,
-   "multiplicador": 8.0,
+   "promocao": false,
+   "multiplicador": 1.0,
    "link": "https://livelo.com.br/juntar-pontos/parceiros/live-oficial/LVE",
    "categoria": "Moda e esporte"
   },
@@ -2272,13 +2272,13 @@
   },
   {
    "parceiro": "Posthaus",
-   "taxa_atual": 10.0,
-   "taxa_normal": 1,
+   "taxa_atual": 1.0,
+   "taxa_normal": 1.0,
    "taxa_clube": null,
    "unidade": "R$",
-   "ate": true,
-   "promocao": true,
-   "multiplicador": 10.0,
+   "ate": false,
+   "promocao": false,
+   "multiplicador": 1.0,
    "link": "https://livelo.com.br/juntar-pontos/parceiros/posthaus/PTH",
    "categoria": "Marketplaces e mercado"
   },
